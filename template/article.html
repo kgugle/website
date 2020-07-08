@@ -1,0 +1,68 @@
+<head>
+    <title>Karan Gugle</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script>
+        const colors = ["#003399", "#71706e", "#941b2a", "#b80721", "#65161C", "#503DBD"]
+        function changeTitleBackground() {
+            document.getElementById("title").style.background = colors[Math.floor(Math.random() * colors.length)];
+        }
+    </script>
+
+    <style>
+
+        /* setup fonts */
+        @font-face {
+           font-family: SerifaLight;
+           src: url(/static/serifa_light.woff);
+        }
+
+        @font-face {
+           font-family: LinotypeBirka;
+           src: url(/static/linotype_birka.woff);
+        }
+
+        @font-face {
+           font-family: MyriadProCondensed;
+           src: url(/static/myriad_pro_condensed.woff);
+        }
+        * { 
+            font-family: LinotypeBirka;
+            font-size: 18px;
+        }
+        h2 { 
+            font-family:  MyriadProCondensed;
+            font-size: 36px;
+        }
+        h1 { 
+            font-family:  SerifaLight;
+            font-weight: 200; 
+            font-size: 90px;
+        }
+
+        /* setup layout */
+        header {
+          margin-top: 20px;
+          margin-bottom: 40px;
+          padding: 30px;
+          color: white;
+        }
+
+        body { 
+            max-width: 700px; 
+            margin: 0 auto !important; 
+            float: none !important; 
+        }
+    </style>
+</head>
+<body onload="changeTitleBackground()">
+    <header id="title">
+      <h1>{{ .Title }}</h1>
+    </header>
+    <img {{ .ImagePosition }} src = "../static/1.png">
+    {{ .Content }}
+</body>
+</html>
+
+
+
