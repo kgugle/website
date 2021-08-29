@@ -1,46 +1,30 @@
 package main
 
 import (
-	"fmt"
-
-	"io/ioutil"
 	"net/http"
 
-	htemplate "html/template"
-	"text/template"
+	"github.com/gorilla/mux"
 )
 
-// Article ...
-type Article struct {
-	Title         string
-	Content       string
-	ImagePosition htemplate.HTMLAttr
-}
+const (
+	StaticDir = "/static/"
+
+	HomeTemplatePath = "./template/home.html"
+
+	ArticleTemplatePath = "./template/article.html"
+	ArticleContentPath  = "./article/%s.html"
+)
 
 func main() {
-	http.HandleFunc("/", article)
+	router := mux.NewRouter()
+	router.HandleFunc("/", home)
+	router.HandleFunc("/{article}", article)
 
-	fs := http.FileServer(http.Dir("./static"))
-	http.Handle("/static/", http.StripPrefix("/static/", fs))
+	router.
+		PathPrefix(StaticDir).
+		Handler(http.StripPrefix(StaticDir, http.FileServer(http.Dir("."+StaticDir))))
 
-	if err := http.ListenAndServe(":1234", nil); err != nil {
+	if err := http.ListenAndServe(":1234", router); err != nil {
 		panic(err)
 	}
-}
-
-func getImagePosition(leftMargin, topMargin int) string {
-	return fmt.Sprintf("style=\"position: relative;left: %dpx; top: %dpx; margin-bottom: %dpx;\"", leftMargin, topMargin, topMargin)
-}
-
-func article(w http.ResponseWriter, r *http.Request) {
-	articleTemplate, _ := template.ParseFiles("./template/article.html")
-	articleContent, _ := ioutil.ReadFile("./article/1.html")
-
-	article := Article{
-		Title:         "How TCP Works in Outer Space",
-		Content:       string(articleContent),
-		ImagePosition: htemplate.HTMLAttr(getImagePosition(375, -225)),
-	}
-
-	articleTemplate.Execute(w, article)
 }
